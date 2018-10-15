@@ -11,11 +11,11 @@ The data_generation_system, use the MaskRCNN and graphCut method to generate the
 7. Scikit-image
 
 ## After Effect
-<figure class="Afte_Effect">
-    <img src="https://github.com/Hongyun1993/Data_generation/blob/master/images/2.jpeg" width="300"/>
-    <img src="https://github.com/Hongyun1993/Data_generation/blob/master/background/11.jpeg" width="300"/>
-    <img src="https://github.com/Hongyun1993/Data_generation/blob/master/background/11.jpeg" width="300"/>
-</figure>
+<center class="Afte_Effect">
+    <img src="https://github.com/Hongyun1993/Data_generation/blob/master/images/2.jpeg" width = "300" height = "300"/>
+    <img src="https://github.com/Hongyun1993/Data_generation/blob/master/background/11.jpeg" width = "300" height = "300"/>
+    <img src="https://github.com/Hongyun1993/Data_generation/blob/master/background/11.jpeg" width = "300" height = "300"/>
+</center>
 
 ![The input image](https://github.com/Hongyun1993/Data_generation/blob/master/images/2.jpeg)
 ![The background](https://github.com/Hongyun1993/Data_generation/blob/master/background/11.jpeg)
