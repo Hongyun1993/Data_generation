@@ -12,8 +12,9 @@ The data_generation_system, use the MaskRCNN and graphCut method to generate the
 
 ## After Effect
 <figure class="Afte_Effect">
-    <img src="https://github.com/Hongyun1993/Data_generation/blob/master/images/2.jpeg" width = "300" height = "300"/>，
-    <img src="https://github.com/Hongyun1993/Data_generation/blob/master/background/11.jpeg" width = "300" height = "300"/>，
+    <img src="https://github.com/Hongyun1993/Data_generation/blob/master/images/2.jpeg" width = "300" height = "300"/>
+    <img src="https://github.com/Hongyun1993/Data_generation/blob/master/background/11.jpeg" width = "300" height = "300"/>
     <img src="https://github.com/Hongyun1993/Data_generation/blob/master/results/2_11.jpeg" width = "300" height = "300"/>
 </figure>
 
+![](https://github.com/Hongyun1993/Data_generation/blob/master/images/2.jpeg)|![](https://github.com/Hongyun1993/Data_generation/blob/master/images/2.jpeg)|![](https://github.com/Hongyun1993/Data_generation/blob/master/images/2.jpeg)
