@@ -1,5 +1,5 @@
 # Data_generation
-The data_generation_system, use the MaskRCNN and graphCut method to generate the comp_images.
+The data generation system, use the MaskRCNN and GraphCut method to generate the comp_images.
 
 ## The Dependency
 1. Opencv-python 3.1.0
