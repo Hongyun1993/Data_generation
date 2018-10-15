@@ -9,3 +9,8 @@ The data_generation_system, use the MaskRCNN and graphCut method to generate the
 5. Scipy
 6. Pillow
 7. Scikit-image
+
+## Effect
+![The input image](https://github.com/Hongyun1993/Data_generation/blob/master/images/2.jpeg)
+![The background](https://github.com/Hongyun1993/Data_generation/blob/master/background/11.jpeg)
+![The comp image](https://github.com/Hongyun1993/Data_generation/blob/master/results/2_11.jpeg)
