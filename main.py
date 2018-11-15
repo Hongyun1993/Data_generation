@@ -25,7 +25,14 @@ COCO_MODEL_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
 if not os.path.exists(COCO_MODEL_PATH):
     utils.download_trained_weights(COCO_MODEL_PATH)
 IMAGE_DIR = './images'
-BACKGROUND_DIR = './background/风景'
+BACKGROUND_DIR = './background'
+
+if not os.path.exists('./masks'):
+    os.path.mkdir('./masks')
+if not os.path.exists('./trimaps'):
+    os.path.mkdir('./trimaps')
+if not os.path.exists('./alphas'):
+    os.path.mkdir('./alphas')
 
 class InferenceConfig(coco.CocoConfig):
     # Set batch size to 1 since we'll be running inference on
@@ -141,3 +148,5 @@ for i in range(1000):
         cv2.imwrite('./results/' + image_name.split('.')[0] + '_' + background_name.split('.')[0] + '.jpeg',comp)
 
         cv2.imwrite('./masks/' + image_name.split('.')[0] + '.jpeg',mask*255)
+        cv2.imwrite('./trimaps/' + image_name.split('.')[0] + '.jpeg',trimap*255)
+        cv2.imwrite('./alphas/' + image_name.split('.')[0] + '.jpeg',alpha*255)
