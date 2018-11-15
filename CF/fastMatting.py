@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from fastLp import fastLp
+#from fastLp import fastLp
 def fastMatting(img,tri):
     '''
     input: img:[row,col,3], tri:[row,col]
@@ -46,8 +46,8 @@ def fastMatting(img,tri):
         rNorm = np.sqrt(np.sum(r*r))
         if rNorm < 10**(-3):
             break
-        cv2.imshow('alpha',alpha)
-        cv2.waitKey(10)
+    #    cv2.imshow('alpha',alpha)
+    #    cv2.waitKey(10)
         print('-'*20+str(iterMax-o)+'-'*20)
         print('res:',rNorm)
         print('alpha_max:',np.max(alpha))

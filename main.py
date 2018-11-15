@@ -20,6 +20,7 @@ import mrcnn.model as modellib
 sys.path.append(os.path.join(ROOT_DIR, "samples/coco/"))
 import coco
 from CF.fastMatting import fastMatting
+from CF.fastLp import fastLp
 MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 COCO_MODEL_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
 if not os.path.exists(COCO_MODEL_PATH):
@@ -28,11 +29,11 @@ IMAGE_DIR = './images'
 BACKGROUND_DIR = './background'
 
 if not os.path.exists('./masks'):
-    os.path.mkdir('./masks')
+    os.mkdir('./masks')
 if not os.path.exists('./trimaps'):
-    os.path.mkdir('./trimaps')
+    os.mkdir('./trimaps')
 if not os.path.exists('./alphas'):
-    os.path.mkdir('./alphas')
+    os.mkdir('./alphas')
 
 class InferenceConfig(coco.CocoConfig):
     # Set batch size to 1 since we'll be running inference on
@@ -63,10 +64,11 @@ def trimap_generation(img,mask,dilate_ratio):
     dilate_ratio = np.tanh(dilate_ratio)
     row,col = np.shape(img)[:2]
     row_k,col_k = int(dilate_ratio*row/10), int(dilate_ratio*col/10)
-    mask_erode = np.blur(mask,(row_k,col_k))
-    mask_erode[mask_erode!=1] = 0
     kernel = np.ones((row_k,col_k))
-    mask_dilate = cv2.dilate(mask,kernel,2)
+    mask_erode = cv2.erode(mask,kernel,1)
+    mask_dilate = cv2.dilate(mask,kernel,1)
+    mask_dilate = cv2.dilate(mask_dilate,kernel,1)
+    mask_dilate = cv2.dilate(mask_dilate,kernel,1)
     trimap = np.zeros((row,col))
     trimap[mask_dilate == 1] = 128
     trimap[mask_erode == 1] = 255
@@ -111,7 +113,7 @@ if_write = True
 image_file_names = next(os.walk(IMAGE_DIR))[2]
 background_file_names = next(os.walk(BACKGROUND_DIR))[2]
 
-for i in range(1000):
+for i in range(10):
     print('-'*20+str(i)+'-'*20)
     image_name = random.choice(image_file_names)
     print(image_name)
@@ -132,7 +134,7 @@ for i in range(1000):
         continue
     background = cv2.resize(background,(row,col),interpolation=cv2.INTER_AREA)
     mask = mask_generation(img, scribble)
-    trimap = trimap_generation(img,mask)
+    trimap = trimap_generation(img,mask,0.3)
     alpha = alpha_generation(img,trimap)
     comp = comp_img(img,alpha,background)
 
@@ -148,5 +150,5 @@ for i in range(1000):
         cv2.imwrite('./results/' + image_name.split('.')[0] + '_' + background_name.split('.')[0] + '.jpeg',comp)
 
         cv2.imwrite('./masks/' + image_name.split('.')[0] + '.jpeg',mask*255)
-        cv2.imwrite('./trimaps/' + image_name.split('.')[0] + '.jpeg',trimap*255)
+        cv2.imwrite('./trimaps/' + image_name.split('.')[0] + '.jpeg',trimap)
         cv2.imwrite('./alphas/' + image_name.split('.')[0] + '.jpeg',alpha*255)
