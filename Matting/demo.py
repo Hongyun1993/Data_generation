@@ -5,7 +5,7 @@ def mask_generation(img, scribble):
     # img:[row,col,3], scribble:[row,col,1]
     col,row = scribble.shape
     kernel = np.ones((int(np.ceil(row/100)),int(np.ceil(col/100))), np.uint8)
-    erosion = cv2.erode(scribble,kernel,iterations = 3) 
+    erosion = cv2.erode(scribble,kernel,iterations = 3)
     mask=2*np.ones((img.shape[:2]),np.uint8)
     mask[erosion == 1] = 1
     bgdModel=np.zeros((1,65),np.float64)
@@ -40,9 +40,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
-    
-    
-    
-    
-    

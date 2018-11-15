@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 # Root directory of the project
 ROOT_DIR = os.path.abspath("./")
 # Import Mask RCNN
-sys.path.append(ROOT_DIR) 
+sys.path.append(ROOT_DIR)
 from mrcnn import utils
 import mrcnn.model as modellib
 from mrcnn import visualize
