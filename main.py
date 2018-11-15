@@ -19,8 +19,8 @@ import mrcnn.model as modellib
 # Import COCO config
 sys.path.append(os.path.join(ROOT_DIR, "samples/coco/"))
 import coco
-from CF.fastMatting import fastMatting
-from CF.fastLp import fastLp
+sys.path.append('./CF')
+from fastMatting import fastMatting
 MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 COCO_MODEL_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
 if not os.path.exists(COCO_MODEL_PATH):

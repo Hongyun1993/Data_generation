@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-#from fastLp import fastLp
+from fastLp import fastLp
 def fastMatting(img,tri):
     '''
     input: img:[row,col,3], tri:[row,col]
