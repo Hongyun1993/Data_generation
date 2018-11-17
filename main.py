@@ -34,6 +34,8 @@ if not os.path.exists('./trimaps'):
     os.mkdir('./trimaps')
 if not os.path.exists('./alphas'):
     os.mkdir('./alphas')
+if not os.path.exists('./results'):
+    os.mkdir('./results')
 
 class InferenceConfig(coco.CocoConfig):
     # Set batch size to 1 since we'll be running inference on
@@ -66,6 +68,7 @@ def trimap_generation(img,mask,dilate_ratio):
     row_k,col_k = int(dilate_ratio*row/10), int(dilate_ratio*col/10)
     kernel = np.ones((row_k,col_k))
     mask_erode = cv2.erode(mask,kernel,1)
+    mask_erode = cv2.erode(mask_erode,kernel,1)
     mask_dilate = cv2.dilate(mask,kernel,1)
     mask_dilate = cv2.dilate(mask_dilate,kernel,1)
     mask_dilate = cv2.dilate(mask_dilate,kernel,1)
@@ -113,7 +116,7 @@ if_write = True
 image_file_names = next(os.walk(IMAGE_DIR))[2]
 background_file_names = next(os.walk(BACKGROUND_DIR))[2]
 
-for i in range(10):
+for i in range(30):
     print('-'*20+str(i)+'-'*20)
     image_name = random.choice(image_file_names)
     print(image_name)
@@ -134,7 +137,7 @@ for i in range(10):
         continue
     background = cv2.resize(background,(row,col),interpolation=cv2.INTER_AREA)
     mask = mask_generation(img, scribble)
-    trimap = trimap_generation(img,mask,0.3)
+    trimap = trimap_generation(img,mask,0.2)
     alpha = alpha_generation(img,trimap)
     comp = comp_img(img,alpha,background)
 

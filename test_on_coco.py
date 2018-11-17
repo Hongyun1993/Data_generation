@@ -43,7 +43,7 @@ class InferenceConfig(coco.CocoConfig):
 config = InferenceConfig()
 config.display()
 
-COCO_DIR = "./cocos/images"  # TODO: enter value here
+COCO_DIR = "../coco/images"  # TODO: enter value here
 
 # Load dataset
 dataset = coco.CocoDataset()
@@ -65,7 +65,7 @@ print('real mask shape:',np.shape(mask))
 # Compute Bounding box
 bbox = utils.extract_bboxes(mask)
 
-is_show = False
+is_show = True
 # Display image and additional stats
 if is_show == True:
     print("image_id ", image_id, dataset.image_reference(image_id))
@@ -82,4 +82,7 @@ model.load_weights(COCO_MODEL_PATH, by_name=True)
 results = model.detect([image], verbose=1)
 r = results[0]
 mask_pred = r['masks']
+class_ids_pred = r['class_ids']
+bbox_pred = utils.extract_bboxes(mask_pred)
+visualize.display_instances(image, bbox_pred, mask_pred, class_ids_pred, dataset.class_names)
 print('pred mask shape:',np.shape(mask_pred))
