@@ -14,6 +14,8 @@ import matplotlib.patches as patches
 import matplotlib.lines as lines
 from matplotlib.patches import Polygon
 
+from utils import *
+
 ## Root directory of the project
 ROOT_DIR = os.path.abspath("./Mask_RCNN")
 
@@ -45,6 +47,11 @@ config.display()
 
 COCO_DIR = "../coco/images"  # TODO: enter value here
 
+if not os.path.exists('./img_patch'):
+   os.mkdir('./img_patch')
+
+
+
 # Load dataset
 dataset = coco.CocoDataset()
 dataset.load_coco(COCO_DIR, "train")
@@ -65,7 +72,7 @@ print('real mask shape:',np.shape(mask))
 # Compute Bounding box
 bbox = utils.extract_bboxes(mask)
 
-is_show = True
+is_show = False
 # Display image and additional stats
 if is_show == True:
     print("image_id ", image_id, dataset.image_reference(image_id))
@@ -84,5 +91,18 @@ r = results[0]
 mask_pred = r['masks']
 class_ids_pred = r['class_ids']
 bbox_pred = utils.extract_bboxes(mask_pred)
-visualize.display_instances(image, bbox_pred, mask_pred, class_ids_pred, dataset.class_names)
+if is_show == True:
+    visualize.display_instances(image, bbox_pred, mask_pred, class_ids_pred, dataset.class_names)
 print('pred mask shape:',np.shape(mask_pred))
+
+index = cal_bbox_error(bbox, bbox_pred)
+mask_error = cal_mask_error(mask, mask_pred,index)
+#print(mask_error)
+min_error = np.min(mask_error)
+img_patch, mask_error = choose_img_patch(image, bbox, mask_error)
+img_patch_name = str(min_error) + '__' + str(image_id) + '.png'
+new_img_patch = img_patch.copy()
+new_img_patch[:,:,0] = img_patch[:,:,2]
+new_img_patch[:,:,2] = img_patch[:,:,0]
+cv2.imwrite(os.path.join('./img_patch', img_patch_name),new_img_patch)
+print('All Done!')
