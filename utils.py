@@ -8,6 +8,8 @@ def cal_bbox_error(bbox, bbox_pred):
     output:
     error_min_index:[n1]
     '''
+    print(bbox)
+    print(bbox_pred)
     lens_bbox = np.shape(bbox)[0]
     lens_bbox_pred = np.shape(bbox_pred)[0]
     bbox = np.reshape(bbox,(lens_bbox,1,4))
@@ -15,8 +17,8 @@ def cal_bbox_error(bbox, bbox_pred):
 
     bbox_mul = np.tile(bbox,(1,lens_bbox_pred,1))
     bbox_pred_mul = np.tile(bbox_pred,(lens_bbox,1,1))
-    print(np.shape(bbox_mul))
-    print(np.shape(bbox_pred_mul))
+    #print(np.shape(bbox_mul))
+    #print(np.shape(bbox_pred_mul))
     error = bbox_mul - bbox_pred_mul
     error = np.sum(error**2, axis = 2)
     error_min = np.min(error,axis = 1)
@@ -34,8 +36,11 @@ def cal_mask_error(mask,mask_pred,index):
     mask_align = mask_pred[:,:,index]
     error = mask.astype(np.int) - mask_align.astype(np.int)
     error = np.sum(error**2, axis = (0,1))
-    ratio = np.sum(mask>0,axis = (0,1))
+    #print(error)
+    ratio = np.sum(mask,axis = (0,1))
+    #print(ratio)
     error = error/ratio
+    #print(error)
     return error
 
 def choose_img_patch(img,bbox,error):
