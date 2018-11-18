@@ -47,8 +47,8 @@ config.display()
 
 COCO_DIR = "../coco/images"  # TODO: enter value here
 
-if not os.path.exists('./img_patch'):
-   os.mkdir('./img_patch')
+if not os.path.exists('./image_all'):
+   os.mkdir('./image_all')
 
 
 
@@ -103,18 +103,10 @@ for o in range(n_num):
 
     index = cal_bbox_error(bbox, bbox_pred)
     mask_error = cal_mask_error(mask, mask_pred,index)
-    print(mask_error)
-    min_error = np.min(mask_error)
-    index = np.argmin(mask_error)
-    bbox_i = bbox[index,:]
-    ratio = np.abs((bbox_i[2] - bbox_i[0]))*np.abs((bbox_i[3] - bbox_i[1]))
-    row,col = np.shape(image)[:2]
-    if ratio/(row*col) < 0.1:
-        continue
-    img_patch, mask_error = choose_img_patch(image, bbox, mask_error)
+    mean_error = np.mean(mask_error)
     img_patch_name = str(min_error) + '__' + str(image_id) + '.png'
-    new_img_patch = img_patch.copy()
-    new_img_patch[:,:,0] = img_patch[:,:,2]
-    new_img_patch[:,:,2] = img_patch[:,:,0]
-    cv2.imwrite(os.path.join('./img_patch', img_patch_name),new_img_patch)
+    new_image = image.copy()
+    new_image[:,:,0] = image[:,:,2]
+    new_image[:,:,2] = image[:,:,0]
+    cv2.imwrite(os.path.join('./image_all', img_patch_name),new_image)
 print('All Done!')
