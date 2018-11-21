@@ -35,8 +35,8 @@ if not os.path.exists(COCO_MODEL_PATH):
 sys.path.append('./CF')
 from fastMatting import fastMatting
 
-if not os.path.exists('./masks'):
-    os.mkdir('./masks')
+if not os.path.exists('./masks_pred'):
+    os.mkdir('./masks_pred')
 if not os.path.exists('./masks_grab'):
     os.mkdir('./masks_grab')
 if not os.path.exists('./trimaps'):
@@ -146,14 +146,15 @@ for o in range(n_num):
     bg = np.zeros(np.shape(new_image))
     comp_ori = comp_img(new_image,mask,bg)
     comp_grab = comp_img(new_image,mask_grab,bg) 
+    image_mask = 0.7*new_image + 0.3*np.tile(255*mask[:,:,np.newaxis],(1,1,3))
     
     if_write = True
     if if_write == True:
-        cv2.imwrite(os.path.join('./image_all', img_patch_name),new_image)
+        cv2.imwrite(os.path.join('./image_all', img_patch_name),image_mask)
         cv2.imwrite('./comp/' + img_patch_name + '_' + background_name.split('.')[0] + '.jpeg',comp)
         cv2.imwrite('./comp_ori/' + str(image_id) + '_' + background_name.split('.')[0] + '.jpeg',comp_ori)
         cv2.imwrite('./comp_grab/' + str(image_id) + '_' + background_name.split('.')[0] + '.jpeg',comp_grab)
-        cv2.imwrite('./masks/' + img_patch_name,mask*255)
+        cv2.imwrite('./masks_pred/' + img_patch_name,mask_pred*255)
         cv2.imwrite('./masks_grab/' + img_patch_name,mask_grab*255)
         cv2.imwrite('./trimaps/' + img_patch_name,trimap)
         cv2.imwrite('./alphas/' + img_patch_name,alpha*255)

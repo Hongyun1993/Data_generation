@@ -25,7 +25,9 @@ def mask_generation(img, scribble):
     col,row = scribble.shape
     kernel = np.ones((int(np.ceil(row/100)),int(np.ceil(col/100))), np.uint8)
     erosion = cv2.erode(scribble,kernel,iterations = 3)
-    mask=2*np.ones((img.shape[:2]),np.uint8)
+    dilate = cv2.dilate(scribble,kernel,iterations = 3)
+    mask = np.zeros((img.shape[:2]),np.uint8)
+    mask[dilate == 1] = 2
     mask[erosion == 1] = 1
     bgdModel=np.zeros((1,65),np.float64)
     fgdModel=np.zeros((1,65),np.float64)
@@ -34,7 +36,7 @@ def mask_generation(img, scribble):
     return mask3
 
 def trimap_generation(img,mask,dilate_ratio):
-    #在原mask的基础上腐蚀1倍，扩张2倍，也就是unknow region在物体内部占1/3,外部占2/3.
+    #在原mask的基础上腐蚀1倍，i扩张2倍，也就是unknow region在物体内部占1/3,外部占2/3.
     #input: img:[row,col,3], mask:[row,col], dilate_ratio:float
     #output: trimap:[row,col],float,前景值为255,背景值为0,不确定区域为128
     dilate_ratio = np.tanh(dilate_ratio)
