@@ -134,7 +134,7 @@ for o in range(n_num):
     mask_pred = np.sum(mask_pred.astype(np.uint8),axis = 2)
     mask_pred[mask_pred>1] = 1
     mask_pred = mask_pred.astype(np.uint8)
-    mask_error = cal_mask_error(mask, mask_pred,index)
+    mask_error = cal_mask_error(mask, mask_pred)
     img_patch_name = str(mask_error) + '__' + str(image_id) + '.png'
     new_image = image.copy()
     new_image[:,:,0] = image[:,:,2]
@@ -145,7 +145,7 @@ for o in range(n_num):
     comp = comp_img(new_image,alpha,background)
     bg = np.zeros(np.shape(new_image))
     comp_ori = comp_img(new_image,mask,bg)
-    comp_grab = comp_img(new_mage,mask_grab,bg) 
+    comp_grab = comp_img(new_image,mask_grab,bg) 
     
     if_write = True
     if if_write == True:
