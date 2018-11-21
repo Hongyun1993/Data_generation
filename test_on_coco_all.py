@@ -78,7 +78,7 @@ for o in range(n_num):
     #print('real mask shape:',np.shape(mask))
     # Compute Bounding box
     bbox = utils.extract_bboxes(mask)
-    if np.shape(bbox)[0]>5:
+    if np.shape(bbox)[0]>3:
         continue
     is_show = False
     # Display image and additional stats
@@ -104,7 +104,7 @@ for o in range(n_num):
     index = cal_bbox_error(bbox, bbox_pred)
     mask_error = cal_mask_error(mask, mask_pred,index)
     mean_error = np.mean(mask_error)
-    img_patch_name = str(min_error) + '__' + str(image_id) + '.png'
+    img_patch_name = str(mean_error) + '__' + str(image_id) + '.png'
     new_image = image.copy()
     new_image[:,:,0] = image[:,:,2]
     new_image[:,:,2] = image[:,:,0]
