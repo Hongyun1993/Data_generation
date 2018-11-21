@@ -100,14 +100,24 @@ def mask_thin(mask):
              1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,\
              1,1,0,0,1,1,0,0,1,1,0,1,1,1,0,0,\
              1,1,0,0,1,1,1,0,1,1,0,0,1,0,0,0]
-    iTwo = Two(image)
+    iTwo = Two(mask)
     iThin = Xihua(iTwo,array)
     return iThin
 
+def get_fine_mask(image):
+
+    image_new = (255 - image).astype(np.uint8)
+    iThin = mask_thin(image_new)
+    iThin = (255 - iThin).astype(np.uint8)
+    iThin_res = image - iThin
+    border = mask_thin((255 - iThin_res).astype(np.uint8))
+    border = (255 - border).astype(np.uint8)
+    new_border = (border + iThin).astype(np.uint8)
+    return new_border
+
 if __name__ == '__main__':
     image = cv2.imread('./mask_davis/bmx-bumps/00000.png',cv2.IMREAD_GRAYSCALE)
-    #image = (255 - image).astype(np.uint8)
-    iThin = mask_thin(image)
+    new_border = get_fine_mask(image)
     cv2.imshow('image',image)
-    cv2.imshow('iThin',iThin)
+    cv2.imshow('new_border',new_border)
     cv2.waitKey(0)
