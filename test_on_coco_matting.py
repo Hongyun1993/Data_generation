@@ -43,8 +43,12 @@ if not os.path.exists('./trimaps'):
     os.mkdir('./trimaps')
 if not os.path.exists('./alphas'):
     os.mkdir('./alphas')
-if not os.path.exists('./results'):
-    os.mkdir('./results')
+if not os.path.exists('./comp'):
+    os.mkdir('./comp')
+if not os.path.exists('./comp_ori'):
+    os.mkdir('./comp_ori')
+if not os.path.exists('./comp_grab'):
+    os.mkdir('./comp_grab')
 
 BACKGROUND_DIR = './background'
 
@@ -139,12 +143,16 @@ for o in range(n_num):
     trimap = trimap_generation(new_image,mask_grab,0.05)
     alpha = alpha_generation(new_image,trimap)
     comp = comp_img(new_image,alpha,background)
-    
+    bg = np.zeros(np.shape(new_image))
+    comp_ori = comp_img(new_image,mask,bg)
+    comp_grab = comp_img(new_mage,mask_grab,bg) 
     
     if_write = True
     if if_write == True:
         cv2.imwrite(os.path.join('./image_all', img_patch_name),new_image)
-        cv2.imwrite('./results/' + img_patch_name + '_' + background_name.split('.')[0] + '.jpeg',comp)
+        cv2.imwrite('./comp/' + img_patch_name + '_' + background_name.split('.')[0] + '.jpeg',comp)
+        cv2.imwrite('./comp_ori/' + str(image_id) + '_' + background_name.split('.')[0] + '.jpeg',comp_ori)
+        cv2.imwrite('./comp_grab/' + str(image_id) + '_' + background_name.split('.')[0] + '.jpeg',comp_grab)
         cv2.imwrite('./masks/' + img_patch_name,mask*255)
         cv2.imwrite('./masks_grab/' + img_patch_name,mask_grab*255)
         cv2.imwrite('./trimaps/' + img_patch_name,trimap)
