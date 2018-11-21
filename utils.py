@@ -17,3 +17,8 @@ def cal_mask_error(mask,mask_pred):
     error = error/ratio
     #print(error)
     return error
+
+def comp_img(img,mask,background):
+    # img:[row,col,3], mask:[row,col], background:[row,col,3]
+    result = img*mask[:,:,np.newaxis] + background*(1-mask[:,:,np.newaxis])
+    return result
