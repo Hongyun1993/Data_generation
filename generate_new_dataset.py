@@ -63,7 +63,11 @@ COCO_DIR = "../coco/images"  # TODO: enter value here
 new_image_dir = '../coco/new_images'
 if not os.path.exists(new_image_dir):
     os.mkdir(new_image_dir)
-    
+
+new_ann_dir = '../coco/new_annotations'
+if not os.path.exists(new_ann_dir):
+    os.mkdir(new_ann_dir)
+
 # load dataset-----------------------------------------------------------------
 dataset = coco.CocoDataset()
 dataset.load_coco(COCO_DIR, "train")
@@ -71,10 +75,10 @@ dataset.load_coco(COCO_DIR, "train")
 dataset.prepare()
 
 # ann part---------------------------------------------------------------------
-ann_path = './annotations/instances_train2014.json'   
-new_ann_path = './new_annotations/instances_train2014.json'
+ann_path = '../coco/annotations/instances_train2014.json'
+new_ann_path = '../coco/new_annotations/instances_train2014.json'
 with open(ann_path,'r') as load_f:
-    load_dict = json.load(load_f) 
+    load_dict = json.load(load_f)
 coco_detail = COCO(ann_path)
 image_ids = coco_detail.imgs.keys()
 load_dict_new = load_dict.copy()
@@ -99,20 +103,20 @@ lens_image = len(image_ids)
 for image_id in image_ids:
     ii += 1
     print('-'*20+str(lens_image - ii)+'-'*20)
-        
-    # generate new image ------------------------------------------------------    
+
+    # generate new image ------------------------------------------------------
     image = dataset.load_image(image_id)
     background_name = random.choice(background_file_names)
     background = cv2.imread(os.path.join(BACKGROUND_DIR, background_name))
     col,row = np.shape(image)[:2]
     background = cv2.resize(background,(row,col),interpolation=cv2.INTER_AREA)
     mask, class_ids = dataset.load_mask(image_id)
-    
+
     # Compute Bounding box-----------------------------------------------------
 #    bbox = utils.extract_bboxes(mask)
 #    if np.shape(bbox)[0]>3:
 #        continue
-#    
+#
     results = model.detect([image], verbose=1)
     r = results[0]
     mask_pred = r['masks']
@@ -133,10 +137,10 @@ for image_id in image_ids:
     mask_pred[mask_pred>1] = 1
     mask_pred = mask_pred.astype(np.uint8)
     mask_error = cal_mask_error(mask, mask_pred)
-    
+
     if mask_error > 0.2:
         continue
-    
+
     # append new annotation----------------------------------------------------
     ann=coco_detail.loadAnns(coco_detail.getAnnIds(imgIds=[image_id], catIds=class_ids, iscrowd=None))
     lens_ann = len(ann)
@@ -144,16 +148,16 @@ for image_id in image_ids:
     for i in range(lens_ann):
         ann[i]['image_id'] = new_image_id
     annotations.extend(ann)
-    
+
     if ii%100 == 0:
         load_dict_new['annotations'] = annotations
         with open(new_ann_path,"w") as f:
             json.dump(load_dict_new,f)
             print("保存文件完成...")
-        
-    
+
+
     img_patch_name = str(mask_error) + '__' + str(image_id) + '.png'
-    
+
     new_image = image.copy()
     new_image[:,:,0] = image[:,:,2]
     new_image[:,:,2] = image[:,:,0]
@@ -161,9 +165,7 @@ for image_id in image_ids:
     trimap = trimap_generation(new_image,mask_grab,0.05)
     alpha = alpha_generation(new_image,trimap)
     comp = comp_img(new_image,alpha,background)
-    
+
     if_write = True
     if if_write == True:
         cv2.imwrite(os.path.join(new_image_dir,img_patch_name),comp)
-
-    
