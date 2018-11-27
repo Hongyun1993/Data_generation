@@ -76,18 +76,13 @@ dataset.load_coco(COCO_DIR, "train")
 dataset.prepare()
 
 # ann part---------------------------------------------------------------------
-ann_path = '../coco/images/annotations/instances_train2014.json'
 new_ann_path = '../coco/new_images/annotations/instances_train2014.json'
 with open(ann_path,'r') as load_f:
     load_dict = json.load(load_f)
-coco_detail = COCO(ann_path)
-images_detail = coco_detail.imgs
-image_ids = images_detail.keys()
 load_dict_new = load_dict.copy()
 # annotations = load_dict['annotations'] #add new image to original dataset
 annotations = []  # creat new dataset
 ann_id_num = len(annotations)
-class_ids = sorted(coco_detail.getCatIds())
 #------------------------------------------------------------------------------
 
 # Load model-------------------------------------------------------------------
@@ -100,12 +95,11 @@ background_file_names = next(os.walk(BACKGROUND_DIR))[2]
 ii = 0
 
 new_index_num = 10**11
-
+image_ids = dataset.image_ids
 lens_image = len(image_ids)
 for image_id in image_ids:
     ii += 1
     print('-'*20+str(lens_image - ii)+'-'*20)
-
     # generate new image ------------------------------------------------------
     image = dataset.load_image(image_id)
     background_name = random.choice(background_file_names)
@@ -144,14 +138,14 @@ for image_id in image_ids:
         continue
 
     # append new annotation----------------------------------------------------
-    ann=coco_detail.loadAnns(coco_detail.getAnnIds(imgIds=[image_id], catIds=class_ids, iscrowd=None))
+    ann= dataset.image_info[image_id]["annotations"]
     lens_ann = len(ann)
     new_image_id = image_id + new_index_num
     for i in range(lens_ann):
         ann[i]['image_id'] = new_image_id
     annotations.extend(ann)
 
-    if ii%100 == 0:
+    if ii%1 == 0:
         load_dict_new['annotations'] = annotations
         with open(new_ann_path,"w") as f:
             json.dump(load_dict_new,f)
