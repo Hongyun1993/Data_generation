@@ -141,7 +141,7 @@ for image_id in image_ids:
     # append new annotation----------------------------------------------------
     ann= dataset.image_info[image_id]["annotations"]
     lens_ann = len(ann)
-    new_image_id = image_id + new_index_num
+    new_image_id = str(image_id + new_index_num)
     for i in range(lens_ann):
         ann[i]['image_id'] = new_image_id
     annotations.extend(ann)
@@ -152,7 +152,7 @@ for image_id in image_ids:
             json.dump(load_dict_new,f)
             print("保存文件完成...")
 
-    img_patch_name = images_detail[image_id]['file_name']
+    img_patch_name = dataset.image_info[image_id]['path'].split('/')[-1]
     temp_names = list(img_patch_name)
     temp_names[15] = '1'
     img_patch_name = ''.join(temp_names)
