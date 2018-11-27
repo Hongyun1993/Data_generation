@@ -80,7 +80,8 @@ new_ann_path = '../coco/new_annotations/instances_train2014.json'
 with open(ann_path,'r') as load_f:
     load_dict = json.load(load_f)
 coco_detail = COCO(ann_path)
-image_ids = coco_detail.imgs.keys()
+images_detail = coco_detail.imgs
+image_ids = images_detail.keys()
 load_dict_new = load_dict.copy()
 # annotations = load_dict['annotations'] #add new image to original dataset
 annotations = []  # creat new dataset
@@ -97,7 +98,7 @@ background_file_names = next(os.walk(BACKGROUND_DIR))[2]
 
 ii = 0
 
-new_index_num = 2000000
+new_index_num = 10**11
 
 lens_image = len(image_ids)
 for image_id in image_ids:
@@ -155,8 +156,10 @@ for image_id in image_ids:
             json.dump(load_dict_new,f)
             print("保存文件完成...")
 
-
-    img_patch_name = str(mask_error) + '__' + str(image_id) + '.png'
+    img_patch_name = images_detail[image_id]['file_name']
+    temp_names = list(img_patch_name)
+    temp_names[15] = '1'
+    img_patch_name = ''.join(temp_names)
 
     new_image = image.copy()
     new_image[:,:,0] = image[:,:,2]
