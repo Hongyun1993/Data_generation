@@ -76,6 +76,7 @@ dataset.load_coco(COCO_DIR, "train")
 dataset.prepare()
 
 # ann part---------------------------------------------------------------------
+ann_path = '../coco/images/annotations/instances_train2014.json'
 new_ann_path = '../coco/new_images/annotations/instances_train2014.json'
 with open(ann_path,'r') as load_f:
     load_dict = json.load(load_f)
