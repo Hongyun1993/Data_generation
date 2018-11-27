@@ -63,8 +63,9 @@ COCO_DIR = "../coco/images"  # TODO: enter value here
 new_image_dir = '../coco/new_images'
 if not os.path.exists(new_image_dir):
     os.mkdir(new_image_dir)
-
-new_ann_dir = '../coco/new_annotations'
+if not os.path.exists(new_image_dir + '/train2014'):
+    os.mkdir(new_image_dir + '/train2014')
+new_ann_dir = '../coco/new_images/annotations'
 if not os.path.exists(new_ann_dir):
     os.mkdir(new_ann_dir)
 
@@ -75,8 +76,8 @@ dataset.load_coco(COCO_DIR, "train")
 dataset.prepare()
 
 # ann part---------------------------------------------------------------------
-ann_path = '../coco/annotations/instances_train2014.json'
-new_ann_path = '../coco/new_annotations/instances_train2014.json'
+ann_path = '../coco/images/annotations/instances_train2014.json'
+new_ann_path = '../coco/new_images/annotations/instances_train2014.json'
 with open(ann_path,'r') as load_f:
     load_dict = json.load(load_f)
 coco_detail = COCO(ann_path)
