@@ -60,12 +60,13 @@ config.display()
 
 COCO_DIR = "../coco/images"  # TODO: enter value here
 
-new_image_dir = '../coco/new_images'
+new_path = '../coco/new_images'
+if not os.path.exists(new_path):
+    os.mkdir(new_path)
+new_image_dir = new_path + '/train2014'
 if not os.path.exists(new_image_dir):
     os.mkdir(new_image_dir)
-if not os.path.exists(new_image_dir + '/train2014'):
-    os.mkdir(new_image_dir + '/train2014')
-new_ann_dir = '../coco/new_images/annotations'
+new_ann_dir = new_path + '/annotations'
 if not os.path.exists(new_ann_dir):
     os.mkdir(new_ann_dir)
 
