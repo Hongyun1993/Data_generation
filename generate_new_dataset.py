@@ -148,7 +148,7 @@ for image_id in image_ids:
     # append new annotation----------------------------------------------------
     ann= dataset.image_info[image_id]["annotations"]
     lens_ann = len(ann)
-    new_image_id = str(image_id + new_index_num)
+    new_image_id = int(image_id + new_index_num)
     for i in range(lens_ann):
         ann[i]['image_id'] = new_image_id
     annotations.extend(ann)
@@ -168,7 +168,7 @@ for image_id in image_ids:
     new_image[:,:,0] = image[:,:,2]
     new_image[:,:,2] = image[:,:,0]
     mask_grab = mask_generation(new_image, mask)
-    trimap = trimap_generation(new_image,mask_grab,0.05)
+    trimap = trimap_generation(new_image,mask_grab,0.1)
     alpha = alpha_generation(new_image,trimap)
     comp = comp_img(new_image,alpha,background)
 
