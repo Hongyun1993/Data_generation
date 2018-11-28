@@ -84,6 +84,11 @@ with open(ann_path,'r') as load_f:
 load_dict_new = load_dict.copy()
 # annotations = load_dict['annotations'] #add new image to original dataset
 annotations = []  # creat new dataset
+
+coco_detail = COCO(ann_path)
+img_details = coco_detail.imgs
+#img_details_new = load_dict['images']
+img_details_new = []
 ann_id_num = len(annotations)
 #------------------------------------------------------------------------------
 
@@ -141,22 +146,29 @@ for image_id in image_ids:
 
     # append new annotation----------------------------------------------------
     ann= dataset.image_info[image_id]["annotations"]
+    img_id = dataset.image_info[image_id]['id']
     lens_ann = len(ann)
-    new_image_id = str(image_id + new_index_num)
+    new_image_id = int(img_id + new_index_num)
     for i in range(lens_ann):
         ann[i]['image_id'] = new_image_id
     annotations.extend(ann)
-
-    if ii%1 == 0:
-        load_dict_new['annotations'] = annotations
-        with open(new_ann_path,"w") as f:
-            json.dump(load_dict_new,f)
-            print("保存文件完成...")
 
     img_patch_name = dataset.image_info[image_id]['path'].split('/')[-1]
     temp_names = list(img_patch_name)
     temp_names[15] = '1'
     img_patch_name = ''.join(temp_names)
+
+    img_detail = img_details[img_id]
+    img_detail['id'] = new_image_id
+    img_detail['file_name'] = img_patch_name
+    img_details_new.extend(img_detail)
+
+    if ii%1 == 0:
+        load_dict_new['annotations'] = annotations
+        load_dict_new['images'] = img_details_new
+        with open(new_ann_path,"w") as f:
+            json.dump(load_dict_new,f)
+            print("保存文件完成...")
 
     new_image = image.copy()
     new_image[:,:,0] = image[:,:,2]
