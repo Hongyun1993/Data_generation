@@ -50,7 +50,7 @@ if not os.path.exists('./comp_ori'):
 if not os.path.exists('./comp_grab'):
     os.mkdir('./comp_grab')
 
-BACKGROUND_DIR = './background'
+BACKGROUND_DIR = '../爬取文件'
 
 
 # MS COCO Dataset
@@ -89,14 +89,20 @@ model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR, config=config)
 model.load_weights(COCO_MODEL_PATH, by_name=True)
 
 n_num = 80000
-background_file_names = next(os.walk(BACKGROUND_DIR))[2]
+background_file_names = next(os.walk(BACKGROUND_DIR))[1]
 for o in range(n_num):
     print('-'*20 + str(n_num - o) + '-'*20)
     # Load random image and mask.
     image_id = random.choice(dataset.image_ids)
     image = dataset.load_image(image_id)
-    background_name = random.choice(background_file_names)
-    background = cv2.imread(os.path.join(BACKGROUND_DIR, background_name))
+    while 1:
+        background_file = random.choice(background_file_names)
+        bg_path = os.path.join(BACKGROUND_DIR,background_file)
+        background_names = next(os.walk(bg_path))[-1]
+        background_name = random.choice(background_names)
+        background = cv2.imread(os.path.join(bg_path, background_name))
+        if len(np.shape(background))>0:
+            break
     col,row = np.shape(image)[:2]
     background = cv2.resize(background,(row,col),interpolation=cv2.INTER_AREA)
     mask, class_ids = dataset.load_mask(image_id)

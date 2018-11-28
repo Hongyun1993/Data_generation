@@ -45,7 +45,7 @@ if not os.path.exists(COCO_MODEL_PATH):
 sys.path.append('./CF')
 from fastMatting import fastMatting
 
-BACKGROUND_DIR = './background'
+BACKGROUND_DIR = '../爬取文件'
 
 # MS COCO Dataset
 import coco
@@ -97,7 +97,7 @@ model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR, config=config)
 model.load_weights(COCO_MODEL_PATH, by_name=True)
 #------------------------------------------------------------------------------
 
-background_file_names = next(os.walk(BACKGROUND_DIR))[2]
+background_file_names = next(os.walk(BACKGROUND_DIR))[1]
 
 ii = 0
 
@@ -109,8 +109,14 @@ for image_id in image_ids:
     print('-'*20+str(lens_image - ii)+'-'*20)
     # generate new image ------------------------------------------------------
     image = dataset.load_image(image_id)
-    background_name = random.choice(background_file_names)
-    background = cv2.imread(os.path.join(BACKGROUND_DIR, background_name))
+    while 1:
+        background_file = random.choice(background_file_names)
+        bg_path = os.path.join(BACKGROUND_DIR,background_file)
+        background_names = next(os.walk(bg_path))[-1]
+        background_name = random.choice(background_names)
+        background = cv2.imread(os.path.join(bg_path, background_name))
+        if len(np.shape(background))>0:
+            break
     col,row = np.shape(image)[:2]
     background = cv2.resize(background,(row,col),interpolation=cv2.INTER_AREA)
     mask, class_ids = dataset.load_mask(image_id)
