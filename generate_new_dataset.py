@@ -140,7 +140,7 @@ for image_id in image_ids:
     mask = np.sum(mask.astype(np.uint8),axis = 2)
     mask[mask>1] = 1
     mask = mask.astype(np.uint8)
-    if np.sum(mask)/(row*col)<0.1:
+    if np.sum(mask)/(row*col)<0.1 or np.sum(mask)/(row*col)>0.9:
         continue
     mask_pred = np.sum(mask_pred.astype(np.uint8),axis = 2)
     mask_pred[mask_pred>1] = 1
