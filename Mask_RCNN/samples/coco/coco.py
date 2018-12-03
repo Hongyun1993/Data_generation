@@ -486,6 +486,7 @@ if __name__ == '__main__':
         # Validation dataset
         dataset_val = CocoDataset()
         val_type = "val" if args.year in '2017' else "minival"
+#        val_type = "val"
         dataset_val.load_coco(args.dataset, val_type, year=args.year, auto_download=args.download)
         dataset_val.prepare()
 

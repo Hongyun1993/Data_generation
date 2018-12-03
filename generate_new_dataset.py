@@ -167,7 +167,7 @@ for image_id in image_ids:
     img_detail = img_details[img_id]
     img_detail['id'] = new_image_id
     img_detail['file_name'] = img_patch_name
-    img_details_new.extend(img_detail)
+    img_details_new.append(img_detail)
 
     if ii%1 == 0:
         load_dict_new['annotations'] = annotations
@@ -180,7 +180,7 @@ for image_id in image_ids:
     new_image[:,:,0] = image[:,:,2]
     new_image[:,:,2] = image[:,:,0]
     mask_grab = mask_generation(new_image, mask)
-    trimap = trimap_generation(new_image,mask_grab,0.05)
+    trimap = trimap_generation(new_image,mask_grab,0.1)
     alpha = alpha_generation(new_image,trimap)
     comp = comp_img(new_image,alpha,background)
 
