@@ -104,7 +104,7 @@ class CocoDataset(utils.Dataset):
         return_coco: If True, returns the COCO object.
         auto_download: Automatically download and unzip MS-COCO images and annotations
         """
-
+        print('subset:',subset)
         if auto_download is True:
             self.auto_download(dataset_dir, subset, year)
 
