@@ -90,6 +90,8 @@ img_details = coco_detail.imgs
 #img_details_new = load_dict['images']
 img_details_new = []
 ann_id_num = len(annotations)
+load_dict_new['images'] = []
+load_dict_new['annotations'] = []
 #------------------------------------------------------------------------------
 
 # Load model-------------------------------------------------------------------
@@ -104,19 +106,23 @@ ii = 0
 new_index_num = 10**11
 image_ids = dataset.image_ids
 lens_image = len(image_ids)
-for image_id in image_ids:
-    ii += 1
-    print('-'*20+str(lens_image - ii)+'-'*20)
+for o in range(lens_image):
+    image_id = image_ids[o]
+    print('-'*20+str(lens_image - o)+'-'*20)
     # generate new image ------------------------------------------------------
     image = dataset.load_image(image_id)
+    print('image_shape:',np.shape(image))
     while 1:
         background_file = random.choice(background_file_names)
         bg_path = os.path.join(BACKGROUND_DIR,background_file)
         background_names = next(os.walk(bg_path))[-1]
         background_name = random.choice(background_names)
-        background = cv2.imread(os.path.join(bg_path, background_name))
-        if len(np.shape(background))>0:
-            break
+        background = cv2.imread(os.path.join(bg_path, background_name),cv2.IMREAD_COLOR)
+        print('background shape:',np.shape(background))
+        if len(np.shape(background))>0: 
+            r,c,l = np.shape(background)
+            if r>0 and c>0 and l>0:
+                break 
     col,row = np.shape(image)[:2]
     background = cv2.resize(background,(row,col),interpolation=cv2.INTER_AREA)
     mask, class_ids = dataset.load_mask(image_id)
@@ -169,9 +175,12 @@ for image_id in image_ids:
     img_detail['file_name'] = img_patch_name
     img_details_new.append(img_detail)
 
-    if ii%1 == 0:
-        load_dict_new['annotations'] = annotations
-        load_dict_new['images'] = img_details_new
+    ii += 1
+    if ii%100 == 1:
+        load_dict_new['annotations'].extend(annotations)
+        load_dict_new['images'].extend(img_details_new)
+        annotations = []
+        img_details_new = []
         with open(new_ann_path,"w") as f:
             json.dump(load_dict_new,f)
             print("保存文件完成...")
