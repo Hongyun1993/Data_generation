@@ -119,10 +119,10 @@ for o in range(lens_image):
         background_name = random.choice(background_names)
         background = cv2.imread(os.path.join(bg_path, background_name),cv2.IMREAD_COLOR)
         print('background shape:',np.shape(background))
-        if len(np.shape(background))>0: 
+        if len(np.shape(background))>0:
             r,c,l = np.shape(background)
             if r>0 and c>0 and l>0:
-                break 
+                break
     col,row = np.shape(image)[:2]
     background = cv2.resize(background,(row,col),interpolation=cv2.INTER_AREA)
     mask, class_ids = dataset.load_mask(image_id)
