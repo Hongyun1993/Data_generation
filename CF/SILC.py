@@ -24,7 +24,6 @@ class Cluster(object):
 class SLICProcessor(object):
     @staticmethod
     def open_image(rgb):
-        rgb = transform.rescale(rgb, 0.3)
         lab_arr = color.rgb2lab(rgb)
         return lab_arr
 
