@@ -11,7 +11,7 @@ import json
 sys.path.append('./Mask_RCNN/samples/coco')
 from pycocotools.coco import COCO
 
-ann_path = '../coco/new_images/annotations/instances_train2014.json'
+ann_path = '../coco/new_images2/annotations/instances_train2014.json'
 with open(ann_path,'r') as load_f:
     load_dict = json.load(load_f)
 

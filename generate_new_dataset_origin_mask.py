@@ -47,8 +47,6 @@ from fastMatting import fastMatting
 
 BACKGROUND_DIR = '../爬取文件'
 
-from PIL import ImageFile
-ImageFile.LOAD_TRUNCATED_IMAGES = True
 # MS COCO Dataset
 import coco
 class InferenceConfig(coco.CocoConfig):
@@ -62,7 +60,7 @@ config.display()
 
 COCO_DIR = "../coco/images"  # TODO: enter value here
 
-new_path = '../coco/new_images'
+new_path = '../coco/new_images_origin_mask'
 if not os.path.exists(new_path):
     os.mkdir(new_path)
 new_image_dir = new_path + '/train2014'
@@ -80,20 +78,20 @@ dataset.prepare()
 
 # ann part---------------------------------------------------------------------
 ann_path = '../coco/images/annotations/instances_train2014.json'
-new_ann_path = '../coco/new_images/annotations/instances_train2014.json'
+new_ann_path = '../coco/new_images_origin_mask/annotations/instances_train2014.json'
 with open(ann_path,'r') as load_f:
     load_dict = json.load(load_f)
-with open(new_ann_path,'r') as load_f_new:
-    load_dict_new = json.load(load_f_new)   
-#load_dict_new = load_dict.copy()
+load_dict_new = load_dict.copy()
+# annotations = load_dict['annotations'] #add new image to original dataset
 annotations = []  # creat new dataset
 
 coco_detail = COCO(ann_path)
 img_details = coco_detail.imgs
+#img_details_new = load_dict['images']
 img_details_new = []
 ann_id_num = len(annotations)
-#load_dict_new['images'] = []
-#load_dict_new['annotations'] = []
+load_dict_new['images'] = []
+load_dict_new['annotations'] = []
 #------------------------------------------------------------------------------
 
 # Load model-------------------------------------------------------------------
@@ -108,7 +106,7 @@ ii = 0
 new_index_num = 10**11
 image_ids = dataset.image_ids
 lens_image = len(image_ids)
-for o in range(25215,lens_image):
+for o in range(lens_image):
     image_id = image_ids[o]
     print('-'*20+str(lens_image - o)+'-'*20)
     # generate new image ------------------------------------------------------
@@ -121,10 +119,10 @@ for o in range(25215,lens_image):
         background_name = random.choice(background_names)
         background = cv2.imread(os.path.join(bg_path, background_name),cv2.IMREAD_COLOR)
         print('background shape:',np.shape(background))
-        if len(np.shape(background))>0: 
+        if len(np.shape(background))>0:
             r,c,l = np.shape(background)
             if r>0 and c>0 and l>0:
-                break 
+                break
     col,row = np.shape(image)[:2]
     background = cv2.resize(background,(row,col),interpolation=cv2.INTER_AREA)
     mask, class_ids = dataset.load_mask(image_id)
@@ -190,10 +188,7 @@ for o in range(25215,lens_image):
     new_image = image.copy()
     new_image[:,:,0] = image[:,:,2]
     new_image[:,:,2] = image[:,:,0]
-    mask_grab = mask_generation(new_image, mask)
-    trimap = trimap_generation(new_image,mask_grab,0.1)
-    alpha = alpha_generation(new_image,trimap)
-    comp = comp_img(new_image,alpha,background)
+    comp = comp_img(new_image, mask, background)
 
     if_write = True
     if if_write == True:
