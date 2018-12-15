@@ -13,10 +13,13 @@ from utils import *
 
 def fitness(img,mask_grab):
 
-    p = SLICProcessor(img,1000,20)
+    p = SLICProcessor(img,2500,20)
     p.iterates()
-    # Refined Mask Generation by GrabCut
-
+    #Param
+    ratio = 0.05
+    threshold = 40
+    row,col = np.shape(mask_grab)
+    rad  = ratio*np.sqrt(row**2+col**2)
     # Find the super pixels which can be matted
     clusters = p.clusters
     num_c = len(clusters)
@@ -36,11 +39,11 @@ def fitness(img,mask_grab):
         sum_mask = np.sum(mask_grab[pixels[:,0],pixels[:,1]])
         len_region = np.shape(pixels)[0]
         row_col = [cluster.row, cluster.col]
-        if sum_mask/len_region < 0.2:
+        if sum_mask/len_region == 0:
     #        clusters[i].type = 'bg'
             clusters_bg.append(cluster)
             row_col_bg.append(row_col)
-        elif sum_mask/len_region > 0.8:
+        elif sum_mask/len_region == 1:
     #        clusters[i].type = 'fg'
             clusters_fg.append(cluster)
             row_col_fg.append(row_col)
@@ -69,20 +72,33 @@ def fitness(img,mask_grab):
         row_col_uk_f = np.tile(row_col_uk,[1,len_fg,1])
         row_col_uk_b = np.tile(row_col_uk,[1,len_bg,1])
 
-        error_u_f = np.sum((row_col_fg - row_col_uk_f)**2, axis = 2)
-        error_u_b = np.sum((row_col_bg - row_col_uk_b)**2, axis = 2)
+        error_u_f = np.sqrt(np.sum((row_col_fg - row_col_uk_f)**2, axis = 2))
+        error_u_b = np.sqrt(np.sum((row_col_bg - row_col_uk_b)**2, axis = 2))
 
         # store the closed superpixel fg and bg index
-        index_u_f = np.argmin(error_u_f, axis = 1)
-        index_u_b = np.argmin(error_u_b, axis = 1)
+        index_u_f = np.array(np.where(error_u_f<rad))
+        index_u_b = np.array(np.where(error_u_b<rad))
 
         fitness_uk = np.zeros((len_uk))
-        threshold = 30
         for i in range(len_uk):
-            cluster_fg = clusters_fg[index_u_f[i]]
-            fg_lab = np.array([cluster_fg.l, cluster_fg.a, cluster_fg.b])
-            cluster_bg = clusters_bg[index_u_b[i]]
-            bg_lab = np.array([cluster_bg.l, cluster_bg.a, cluster_bg.b])
+            fg_index = np.squeeze(np.array(np.where(index_u_f[0,:]==i)))
+            len_f = len(fg_index)
+            fg_lab = np.array([0.,0.,0.])
+            for ii in range(len_f):
+                index = index_u_f[1,fg_index[ii]]
+                cluster_fg = clusters_fg[index]
+                fg_lab += np.array([cluster_fg.l, cluster_fg.a, cluster_fg.b])
+            fg_lab = fg_lab/len_f
+
+            bg_index = np.squeeze(np.array(np.where(index_u_b[0,:]==i)))
+            len_b = len(bg_index)
+            bg_lab = np.array([0.,0.,0.])
+            for ii in range(len_b):
+                index = index_u_b[1,bg_index[ii]]
+                cluster_bg = clusters_bg[index]
+                bg_lab += np.array([cluster_bg.l, cluster_bg.a, cluster_bg.b])
+            bg_lab = bg_lab/len_b
+
             lab_error = np.sqrt(np.sum((fg_lab - bg_lab)**2))
             print('lab_error:', lab_error)
             if lab_error >= threshold:

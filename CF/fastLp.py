@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-def fastLp(img,p,deltaInv,mu,radSize,D,nambda):
+def fastLp(img,p,deltaInv,mu,radSize,D,nambda,D2,gamma):
     '''
     input: img:[row,col,3], p:[row,col], deltaInv:[row,col,3,3]
     mu:[row,col], radSize:int
@@ -33,5 +33,5 @@ def fastLp(img,p,deltaInv,mu,radSize,D,nambda):
     aSum = aSum[radSize:radSize+row,radSize:radSize+col]
     bSum = bSum[radSize:radSize+row,radSize:radSize+col]
     Lp = (kSize*kSize)*p - np.sum(aSum*img,axis = 2) - bSum
-    q = Lp + nambda * D * p
+    q = Lp + (nambda * D + gamma*D2) * p
     return q
