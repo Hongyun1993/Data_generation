@@ -53,10 +53,10 @@ def trimap_generation(img,mask,dilate_ratio):
     trimap[mask_erode == 1] = 255
     return trimap
 
-def alpha_generation(img,trimap):
+def alpha_generation(img,trimap,trimap2):
     #input: img:[row,col,3],trimap:[row,col]
     #output: alpha:[row,col],float,0~1
-    alpha = fastMatting(img,trimap)
+    alpha = fastMatting(img,trimap,trimap2)
     alpha[alpha<0] = 0
     alpha[alpha>1] = 1
     return alpha

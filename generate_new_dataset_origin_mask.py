@@ -5,7 +5,8 @@ Created on Mon Nov 26 19:35:31 2018
 
 @author: lhy
 """
-
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 import os
 import cv2
 import sys

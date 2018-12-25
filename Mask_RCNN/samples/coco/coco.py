@@ -26,7 +26,8 @@ Usage: import the module (see Jupyter notebooks for examples), or run from
     # Run COCO evaluatoin on the last model you trained
     python3 coco.py evaluate --dataset=/path/to/coco/ --model=last
 """
-
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 import os
 import sys
 import time
